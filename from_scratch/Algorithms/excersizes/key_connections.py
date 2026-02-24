@@ -8,6 +8,8 @@ of users and their interests.
 
 from collections import defaultdict
 from collections import Counter
+import matplotlib.pyplot as plt
+plt.style.use("ggplot")
 
 # Set of users
 users = [
@@ -44,6 +46,15 @@ interests = [
     (7, "neural networks"), (8, "neural networks"), (8, "deep learning"),
     (8, "Big Data"), (8, "artificial intelligence"), (9, "Hadoop"),
     (9, "Java"), (9, "MapReduce"), (9, "Big Data")
+]
+
+# Salaries with number of years experience
+salaries_and_tenures = [
+    (83000, 8.7), (88000, 8.1),
+    (48000, 0.7), (76000, 6),
+    (69000, 6.5), (76000, 7.5),
+    (60000, 2.5), (83000, 10),
+    (48000, 1.9), (63000, 4.2)
 ]
 
 """
@@ -143,3 +154,43 @@ def most_common_interests(user):
     )
 
 print(most_common_interests(users[0]))
+print()
+
+# 4. What is the relationship between salaries and years of experience?
+salaries_by_tenure = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    salaries_by_tenure[tenure].append(salary)
+
+salaries = [s[0] for s in salaries_and_tenures]
+tenures  = [t[1] for t in salaries_and_tenures]
+plt.scatter(tenures, salaries)
+plt.title("Years of Experience and Salaries")
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary ($)")
+plt.show()
+
+# NOTE: Finding the average salary by tenure is meaningless because we do not
+#       have overlapping tenures. A more meaningful metric for the sparse dataset
+#       is to create bins (salary ranges) and compute means.
+def tenure_bucket(tenure):
+    if tenure < 2:
+        return "<2"
+    elif tenure < 5:
+        return "<5"
+    else:
+        return ">=5"
+
+salaries_by_tenure_bucket = defaultdict(list)
+for salary, tenure in salaries_and_tenures:
+    salaries_by_tenure_bucket[tenure_bucket(tenure)].append(salary)
+
+print(salaries_by_tenure_bucket)
+
+# Compute means per bucket
+average_salary_by_bucket = {
+    tenure : sum(salaries) / len(salaries)
+    for tenure, salaries in salaries_by_tenure_bucket.items()
+}
+
+print(average_salary_by_bucket)
