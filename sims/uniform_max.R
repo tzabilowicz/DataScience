@@ -1,4 +1,7 @@
 # Simulate sampling distribution of scaled max for uniform data
+# In practice, we dont know theta. We substitute the actual value of T
+# for theta T=((n+1)/n) * max(unif[0,theta])
+
 n = 12
 theta = 1 # unknown to us
 
